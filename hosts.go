@@ -113,7 +113,8 @@ func (h *Hosts) add(hostsPerLine int, ip string, hosts ...string) error {
 		})
 	} else {
 		// add new hosts to the correct position for the ip
-		hostsCopy := h.Lines[position].Hosts
+		hostsCopy := make([]string, len(h.Lines[position].Hosts))
+		copy(hostsCopy, h.Lines[position].Hosts)
 		for _, addHost := range hosts {
 			if itemInSlice(addHost, hostsCopy) {
 				continue // host exists for ip already
