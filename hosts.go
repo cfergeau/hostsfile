@@ -98,8 +98,7 @@ func (h Hosts) Flush() error {
 	return h.Load()
 }
 
-// Add an entry to the hosts file.
-func (h *Hosts) Add(ip string, hosts ...string) error {
+func (h *Hosts) add(hostsPerLine int, ip string, hosts ...string) error {
 	if net.ParseIP(ip) == nil {
 		return fmt.Errorf("%q is an invalid IP address", ip)
 	}
@@ -125,8 +124,14 @@ func (h *Hosts) Add(ip string, hosts ...string) error {
 		h.Lines[position].Hosts = hostsCopy
 		h.Lines[position].Raw = h.Lines[position].ToRaw() // reset raw
 	}
+	h.HostsPerLine(hostsPerLine)
 
 	return nil
+}
+
+// Add an entry to the hosts file.
+func (h *Hosts) Add(ip string, hosts ...string) error {
+	return h.add(HostsPerLine, ip, hosts...)
 }
 
 // merge dupelicate ips and hosts per ip

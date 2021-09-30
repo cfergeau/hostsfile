@@ -219,6 +219,32 @@ func TestHostsLineWithTrailingComment(t *testing.T) {
 	}
 }
 
+func TestHostsAddHostsPerLine(t *testing.T) {
+	hosts := new(Hosts)
+	hosts.Lines = []HostsLine{
+		NewHostsLine("127.0.0.1 yadda")}
+
+	if err := hosts.add(2, "10.0.0.7", "nada", "brada", "yadda"); err != nil {
+		t.Error(err)
+	}
+	expectedLines := []HostsLine{
+		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 nada brada"), NewHostsLine("10.0.0.7 yadda"),
+	}
+	if !reflect.DeepEqual(hosts.Lines, expectedLines) {
+		t.Error("Failed to split long hosts lines")
+	}
+
+	if err := hosts.add(2, "10.0.0.7", "prada", "nadda"); err != nil {
+		t.Error(err)
+	}
+	expectedLines = []HostsLine{
+		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 nada brada"), NewHostsLine("10.0.0.7 yadda prada"), NewHostsLine("10.0.0.7 nadda"),
+	}
+	if !reflect.DeepEqual(hosts.Lines, expectedLines) {
+		t.Error("Failed to split long hosts lines")
+	}
+}
+
 func TestHostsLineWithComments(t *testing.T) {
 	hosts := new(Hosts)
 	hosts.Lines = []HostsLine{
