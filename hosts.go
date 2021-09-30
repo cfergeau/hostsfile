@@ -361,7 +361,7 @@ func (h Hosts) getHostnamePosition(host string) int {
 }
 
 func (h Hosts) getIpPosition(ip string) int {
-	for i := range h.Lines {
+	for i := len(h.Lines) - 1; i >= 0; i-- {
 		line := h.Lines[i]
 		if !line.IsComment() && line.Raw != "" && line.IP == ip {
 			return i
